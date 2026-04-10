@@ -3,6 +3,7 @@ package github
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -48,7 +49,11 @@ func (c *Client) RepositoryExists(owner, repo string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close response body: %v", err)
+		}
+	}()
 
 	if resp.StatusCode == http.StatusOK {
 		var result RepoResponse
@@ -88,7 +93,11 @@ func (c *Client) GetLatestReleaseTag(owner, repo string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close resp.Body: %v", err)
+		}
+	}()
 
 	if resp.StatusCode == http.StatusOK {
 		var result ReleaseResponse

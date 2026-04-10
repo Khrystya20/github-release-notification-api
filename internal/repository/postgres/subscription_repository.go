@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"log"
 
 	"github-release-notification-api/internal/model"
 )
@@ -191,7 +192,11 @@ func (r *SubscriptionRepository) GetActiveByEmail(email string) ([]model.Subscri
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("failed to close rows: %v", err)
+		}
+	}()
 
 	var result []model.SubscriptionResponse
 	for rows.Next() {
@@ -218,7 +223,11 @@ func (r *SubscriptionRepository) GetActiveConfirmedByRepositoryID(repositoryID i
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("failed to close rows: %v", err)
+		}
+	}()
 
 	var result []model.Subscription
 	for rows.Next() {

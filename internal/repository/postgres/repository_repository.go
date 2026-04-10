@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"log"
 
 	"github-release-notification-api/internal/model"
 )
@@ -114,7 +115,11 @@ func (r *RepositoryRepository) GetTrackedRepositories() ([]model.Repository, err
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("failed to close rows: %v", err)
+		}
+	}()
 
 	var repos []model.Repository
 	for rows.Next() {

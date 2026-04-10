@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -31,7 +32,11 @@ func NewPostgresDB(cfg *config.Config) (*sql.DB, error) {
 	db.SetConnMaxLifetime(30 * time.Minute)
 
 	if err := db.Ping(); err != nil {
-		db.Close()
+		defer func() {
+			if err := db.Close(); err != nil {
+				log.Printf("failed to close db: %v", err)
+			}
+		}()
 		return nil, fmt.Errorf("ping database: %w", err)
 	}
 
