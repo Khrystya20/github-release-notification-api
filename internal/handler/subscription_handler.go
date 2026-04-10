@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -61,6 +62,7 @@ func (h *SubscriptionHandler) Subscribe(c *gin.Context) {
 			return
 
 		default:
+			log.Printf("subscribe error: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "request cannot be processed"})
 			return
 		}
