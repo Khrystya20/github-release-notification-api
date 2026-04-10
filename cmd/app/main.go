@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	githubclient "github-release-notification-api/internal/client/github"
@@ -60,6 +61,14 @@ func main() {
 
 	subscriptionHandler := handler.NewSubscriptionHandler(subscriptionService)
 	router := handler.SetupRouter(subscriptionHandler)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = cfg.AppPort
+	}
+	if port == "" {
+		port = "8080"
+	}
 
 	log.Printf("server started on port %s", cfg.AppPort)
 	if err := router.Run(":" + cfg.AppPort); err != nil {
