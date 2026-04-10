@@ -152,3 +152,31 @@ The service will be available at:
 ```text
 http://localhost:8080
 ```
+
+## Deployment
+
+The application is deployed on Render:
+
+- Web Service (Go API)
+- PostgreSQL (managed database)
+
+Key deployment details:
+
+- environment variables are configured in Render
+- the application reads the port from the PORT environment variable in production
+- /health endpoint is used for health checks
+- HTML templates are embedded into the binary to ensure correct behavior in production
+
+### HTML subscription page
+
+In addition to the REST API, the project includes a simple HTML page for subscribing to GitHub release notifications.
+
+- GET /subscribe returns an HTML form
+- the form allows entering:
+   - email
+   - repository in owner/repo format
+- after submission, the page sends a request to POST /api/subscribe
+- the result (success or error) is displayed directly on the page
+
+### Public page:
+https://github-release-notification-api-qj7p.onrender.com/subscribe
