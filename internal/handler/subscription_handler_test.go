@@ -64,7 +64,7 @@ func (f *fakeSubscriptionService) GetSubscriptions(email string) ([]model.Subscr
 func setupTestRouter(svc SubscriptionService) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	h := NewSubscriptionHandler(svc)
-	return SetupRouter(h)
+	return SetupRouter(h, "test-api-key")
 }
 
 func newJSONRequest(method, path, body string) *http.Request {
@@ -454,6 +454,7 @@ func TestGetSubscriptions_Success(t *testing.T) {
 	router := setupTestRouter(svc)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/subscriptions?email=test@example.com", nil)
+	req.Header.Set("X-API-Key", "test-api-key")
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
@@ -487,6 +488,7 @@ func TestGetSubscriptions_InvalidEmail(t *testing.T) {
 	router := setupTestRouter(svc)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/subscriptions?email=bad-email", nil)
+	req.Header.Set("X-API-Key", "test-api-key")
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
@@ -508,6 +510,7 @@ func TestGetSubscriptions_InternalError(t *testing.T) {
 	router := setupTestRouter(svc)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/subscriptions?email=test@example.com", nil)
+	req.Header.Set("X-API-Key", "test-api-key")
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
