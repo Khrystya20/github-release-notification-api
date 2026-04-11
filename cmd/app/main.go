@@ -60,7 +60,7 @@ func main() {
 	scheduler.Start(scannerService, interval)
 
 	subscriptionHandler := handler.NewSubscriptionHandler(subscriptionService)
-	router := handler.SetupRouter(subscriptionHandler)
+	router := handler.SetupRouter(subscriptionHandler, cfg.APIKey)
 
 	port := os.Getenv("PORT")
 	if port == "" {

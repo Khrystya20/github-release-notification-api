@@ -180,3 +180,39 @@ In addition to the REST API, the project includes a simple HTML page for subscri
 
 ### Public page:
 https://github-release-notification-api-qj7p.onrender.com/subscribe
+
+## CI (GitHub Actions)
+
+The project includes a GitHub Actions CI pipeline that runs automatically on every push to `main`/`master` and on every pull request.
+
+The pipeline performs:
+
+- dependency download
+- formatting check using `gofmt`
+- test execution using `go test ./...`
+- lint checks using `golangci-lint`
+
+The workflow is defined in:
+
+```text
+.github/workflows/ci.yml
+```
+
+## API key authentication
+
+The project includes API key authentication for protected endpoints.
+
+The API key must be provided in the request header:
+```text
+X-API-Key: <your_api_key>
+```
+
+Currently, the following endpoint is protected:
+
+- `GET /api/subscriptions`
+
+Example request:
+
+```bash
+curl -H "X-API-Key: your_api_key" \
+"http://localhost:8080/api/subscriptions?email=test@example.com"

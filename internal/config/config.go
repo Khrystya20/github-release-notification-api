@@ -23,6 +23,7 @@ type Config struct {
 	SMTPFrom     string
 	ScanInterval string
 	GitHubToken  string
+	APIKey       string
 }
 
 func Load() *Config {
@@ -47,6 +48,7 @@ func Load() *Config {
 		SMTPFrom:     getEnv("SMTP_FROM", "no-reply@releases-api.local"),
 		ScanInterval: getEnv("SCAN_INTERVAL", "1m"),
 		GitHubToken:  getEnv("GITHUB_TOKEN", ""),
+		APIKey:       getEnv("API_KEY", ""),
 	}
 }
 

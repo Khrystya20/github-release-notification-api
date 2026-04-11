@@ -2,6 +2,7 @@ package handler
 
 import (
 	"embed"
+	"github-release-notification-api/internal/middleware"
 	"html/template"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 //go:embed templates/*.html
 var templatesFS embed.FS
 
-func SetupRouter(subscriptionHandler *SubscriptionHandler) *gin.Engine {
+func SetupRouter(subscriptionHandler *SubscriptionHandler, apiKey string) *gin.Engine {
 	router := gin.Default()
 
 	tmpl := template.Must(template.ParseFS(templatesFS, "templates/*.html"))
@@ -33,7 +34,12 @@ func SetupRouter(subscriptionHandler *SubscriptionHandler) *gin.Engine {
 		api.POST("/subscribe", subscriptionHandler.Subscribe)
 		api.GET("/confirm/:token", subscriptionHandler.Confirm)
 		api.GET("/unsubscribe/:token", subscriptionHandler.Unsubscribe)
-		api.GET("/subscriptions", subscriptionHandler.GetSubscriptions)
+	}
+
+	protected := router.Group("/api")
+	protected.Use(middleware.APIKeyAuth(apiKey))
+	{
+		protected.GET("/subscriptions", subscriptionHandler.GetSubscriptions)
 	}
 
 	return router
